@@ -31,10 +31,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y cmake build-essential
 
-    - name: Install dependencies (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        choco install cmake --installargs '"ADD_CMAKE_TO_PATH=System"'
+    # - name: Install dependencies (Windows)
+    #   if: runner.os == 'Windows'
+    #   run: |
+    #     choco install cmake --installargs '"ADD_CMAKE_TO_PATH=System"'
 
     - name: Setup Visual Studio (Windows)
       if: runner.os == 'Windows'
