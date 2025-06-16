@@ -21,7 +21,7 @@ jobs:
             xp_compat: true
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: true
 
@@ -63,8 +63,8 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Release -Wno-dev
-        cmake --build . --config Release
+        cmake -G "NMake Makefiles" -Wno-dev ..
+        nmake
 
     - name: Run tests (Ubuntu)
       if: runner.os == 'Linux'
@@ -79,9 +79,9 @@ jobs:
 
     - name: Run tests (Windows)
       if: runner.os == 'Windows'
-      shell: cmd
+      shell: pwsh
       run: |
-        cd build\bin\Release
+        cd build\bin
         for %%f in (test_*.exe) do (
           echo Running test: %%f
           %%f
