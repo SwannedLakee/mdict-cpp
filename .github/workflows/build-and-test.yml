@@ -17,8 +17,7 @@ jobs:
           - os: ubuntu-latest
             compiler: clang
           - os: windows-latest
-            compiler: msvc
-            xp_compat: true
+            compiler: mingw
 
     steps:
     - uses: actions/checkout@v4
@@ -31,16 +30,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y cmake build-essential
 
-    # - name: Install dependencies (Windows)
-    #   if: runner.os == 'Windows'
-    #   run: |
-    #     choco install cmake --installargs '"ADD_CMAKE_TO_PATH=System"'
-
-    - name: Setup Visual Studio (Windows)
+    - name: Install dependencies (Windows)
       if: runner.os == 'Windows'
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: x86
+      run: |
+        choco install mingw cmake --installargs '"ADD_CMAKE_TO_PATH=System"'
 
     - name: Configure and build (Ubuntu)
       if: runner.os == 'Linux'
@@ -59,12 +52,13 @@ jobs:
 
     - name: Configure and build (Windows)
       if: runner.os == 'Windows'
-      shell: pwsh
+      shell: cmd
       run: |
+        set PATH=%PATH%;C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin
         mkdir build
         cd build
-        cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -Wno-dev ..
-        nmake /ERRORREPORT PROMPT /D /P
+        cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+        mingw32-make -j4
 
     - name: Run tests (Ubuntu)
       if: runner.os == 'Linux'
@@ -79,7 +73,7 @@ jobs:
 
     - name: Run tests (Windows)
       if: runner.os == 'Windows'
-      shell: pwsh
+      shell: cmd
       run: |
         cd build\bin
         for %%f in (test_*.exe) do (
