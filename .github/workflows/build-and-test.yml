@@ -59,7 +59,7 @@ jobs:
 
     - name: Configure and build (Windows)
       if: runner.os == 'Windows'
-      shell: cmd
+      shell: pwsh
       run: |
         mkdir build
         cd build
