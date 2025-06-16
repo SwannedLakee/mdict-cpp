@@ -63,8 +63,12 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -G "NMake Makefiles" -Wno-dev ..
-        nmake
+        cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -Wno-dev ..
+        nmake VERBOSE=1
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Build failed with exit code $LASTEXITCODE"
+          exit 1
+        }
 
     - name: Run tests (Ubuntu)
       if: runner.os == 'Linux'
